@@ -6,6 +6,22 @@ import axios from "axios";
 
 const router = new Navigo(window.location.origin);
 
+router.hooks({
+  before: (done, params) => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
+      // handle the response from the API
+      .then(response => {
+        // for each post in the response Array,
+        response.data.forEach(post => {
+          // add it to state.Blog.posts
+          state.Blog.posts.push(post);
+        });
+        done();
+      });
+  }
+});
+
 router
   .on({
     ":page": params => render(state[capitalize(params.page)]),
@@ -61,13 +77,3 @@ function addEventListeners(st) {
     });
   }
 }
-axios
-  .get("https://jsonplaceholder.typicode.com/posts")
-  // handle the response from the API
-  .then(response => {
-    // for each post in the response Array,
-    response.data.forEach(post => {
-      // add it to state.Blog.posts
-      state.Blog.posts.push(post);
-    });
-  });
